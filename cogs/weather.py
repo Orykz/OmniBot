@@ -1,25 +1,29 @@
 import discord
 from discord.ext import commands
 import requests
-import os
+
+from typing import Dict, Any
+
+from config import WEATHER_API_KEY
+from errors import ERRORS, CLIENT_ERRORS, WEATHER_API_ERROR, WEATHER_404_ERROR
 
 
 class Weather(commands.Cog):
-    def __init__(self, bot) -> None:
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-        self.api_key = os.getenv("WEATHER_API_KEY")
+        self.api_key = WEATHER_API_KEY
         self.base_url = "http://api.weatherapi.com/v1/current.json"
 
     @commands.command(
         name="weather",
         help="Get the current weather for the entered location. Usage: !weather [Location]",
     )
-    async def get_weather(self, ctx, *, location: str):
+    async def get_weather(self, ctx: commands.Context, *, location: str) -> None:
         weather_params = {"key": self.api_key, "q": location}
         response = requests.get(self.base_url, params=weather_params)
 
         if response.status_code == 200:
-            weather_data = response.json()
+            weather_data: Dict[str, Any] = response.json()
             location_data = weather_data["location"]
             current_weather = weather_data["current"]
             weather_cond = current_weather["condition"]
@@ -47,15 +51,14 @@ class Weather(commands.Cog):
             await ctx.send(embed=embed)
 
         elif response.status_code == 404:
-            await ctx.send(
-                f"Sorry, I couldn't find the weather for **{location}**. Please make sure the city exists."
-            )
+            print(ERRORS[WEATHER_404_ERROR])
+            message = CLIENT_ERRORS[WEATHER_404_ERROR].replace("<location>", location)
+            await ctx.send(message)
         else:
-            await ctx.send(
-                "Sorry, Something went wrong when I was checking the weather"
-            )
-            print(f"Issue Encountered. Weather API status code: {response.status_code}")
+            print(f"{ERRORS[WEATHER_API_ERROR]} http response: {response.status_code}")
+            message = CLIENT_ERRORS[WEATHER_API_ERROR]
+            await ctx.send(message)
 
 
-async def setup(bot):
+async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Weather(bot))
