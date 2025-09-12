@@ -2,7 +2,7 @@ from typing import Dict
 
 (
     SUCCESS,
-    FILE_ERROR,
+    FILE_404_ERROR,
     DB_READ_ERROR,
     DB_WRITE_ERROR,
     DB_EXISTS_ERROR,
@@ -16,7 +16,7 @@ from typing import Dict
 
 
 ERRORS: Dict[int, str] = {
-    FILE_ERROR: "cannot access the env file",
+    FILE_404_ERROR: "file does not exist",
     DB_READ_ERROR: "Cannot read the database",
     DB_WRITE_ERROR: "Issue with writing to the database",
     DB_EXISTS_ERROR: "database already exists",
@@ -29,7 +29,7 @@ ERRORS: Dict[int, str] = {
 }
 
 CLIENT_ERRORS: Dict[int, str] = {
-    FILE_ERROR: "I seem to be missing my limbs. Please tell someone to attach them.",
+    FILE_404_ERROR: "I seem to be missing my limbs. Please tell someone to attach them.",
     DB_READ_ERROR: "I forgot my storage keys, please tell my dev",
     DB_WRITE_ERROR: "Hmmm, there is something wrong with my storage. HELP!",
     DB_EXISTS_ERROR: "AYAYA! my storage was not configured properly",

@@ -16,7 +16,6 @@ class Reminders(commands.Cog):
         self.check_reminders.start()
 
     async def cog_unload(self):
-        self.db_handler.close_connection()
         self.check_reminders.cancel()
         await super().cog_unload()
 
@@ -76,7 +75,7 @@ class Reminders(commands.Cog):
 
         self.db_handler.delete_reminder(reminder.id)
 
-    @tasks.loop(seconds=30)
+    @tasks.loop(seconds=5)
     async def check_reminders(self):
         await self.bot.wait_until_ready()
         now_utc = datetime.now(timezone.utc)

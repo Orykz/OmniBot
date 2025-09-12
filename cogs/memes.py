@@ -6,14 +6,15 @@ import random
 from typing import Dict, Any
 
 from errors import ERRORS, CLIENT_ERRORS, MEME_API_ERROR
+from config import MEME_BU, MEME_SUBS, MEME_NSFW
 
 
 class Memes(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-        self.base_url = "https://meme-api.com/gimme"
-        self.subreddits = ["memes", "dankmemes", "KanalHumor"]
-        self.allow_nsfw = False
+        self.base_url = MEME_BU
+        self.subreddits = MEME_SUBS
+        self.allow_nsfw = MEME_NSFW
 
     @commands.command(name="meme", help="Sends a random meme from Reddit.")
     async def get_meme(self, ctx: commands.Context) -> None:
