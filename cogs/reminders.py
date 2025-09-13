@@ -1,10 +1,15 @@
 import discord
 from discord.ext import commands, tasks
 import parsedatetime
-
 from datetime import datetime, timezone
 from database import DatabaseHandler, Reminder
-from errors import ERRORS, CLIENT_ERRORS, INVALID_REMINDER_ERROR, DIRECT_MESSAGE_ERROR
+from errors import (
+    DBError,
+    ERRORS,
+    CLIENT_ERRORS,
+    INVALID_REMINDER_ERROR,
+    DIRECT_MESSAGE_ERROR,
+)
 
 
 class Reminders(commands.Cog):
@@ -29,7 +34,7 @@ class Reminders(commands.Cog):
         split_data = text.split("note:")
         time_set = split_data[0]
         message = split_data[1] if len(split_data) > 1 else None
-        parsed_time, parse_status = self.cal.parse(time_set)
+        parsed_time, parse_status = self.cal.parseDT(time_set, tzinfo=timezone.utc)
 
         try:
             if not parse_status:
@@ -52,11 +57,14 @@ class Reminders(commands.Cog):
             )
             await ctx.send("Got it! I will remind you in the designated time.")
 
-        except Exception:
+        except ValueError:
             print(ERRORS[INVALID_REMINDER_ERROR])
             error = CLIENT_ERRORS[INVALID_REMINDER_ERROR]
             await ctx.send(error)
-            return
+        except DBError as e:
+            print(e)
+            error = CLIENT_ERRORS[e.code]
+            await ctx.send(error)
 
     async def send_reminder(self, reminder: Reminder):
         user = self.bot.get_user(reminder.user_id)
@@ -73,8 +81,6 @@ class Reminders(commands.Cog):
             except discord.Forbidden:
                 print(ERRORS[DIRECT_MESSAGE_ERROR])
 
-        self.db_handler.delete_reminder(reminder.id)
-
     @tasks.loop(seconds=5)
     async def check_reminders(self):
         await self.bot.wait_until_ready()
@@ -82,8 +88,12 @@ class Reminders(commands.Cog):
         reminders_to_send = self.db_handler.get_reminders(now_utc)
 
         for reminder in reminders_to_send:
-            print(f"set a reminder to user(id): {reminder.user_id}")
-            await self.send_reminder(reminder)
+            try:
+                print(f"set a reminder to user(id): {reminder.user_id}")
+                self.db_handler.delete_reminder(reminder.id)
+                await self.send_reminder(reminder)
+            except DBError as e:
+                print(e)
 
 
 async def setup(bot: commands.Bot):

@@ -3,8 +3,14 @@ import functools
 from datetime import datetime
 from collections.abc import Callable
 from typing import List, NamedTuple, Any, Optional, cast
-
 from config import DB_PATH
+from errors import (
+    DBError,
+    DB_DATA_ERROR,
+    DB_INTERNAL_ERROR,
+    DB_PROGRAM_ERROR,
+    DB_TRANSACT_ERROR,
+)
 
 
 def connect_db[T, **P](func: Callable[P, T]) -> Callable[P, T]:
@@ -16,9 +22,14 @@ def connect_db[T, **P](func: Callable[P, T]) -> Callable[P, T]:
                 result = func(*args, **kwargs)
                 conn.commit()
                 return result
-        except sqlite3.Error:
-            print("error")
-            raise
+        except sqlite3.DataError:
+            raise DBError(DB_DATA_ERROR, func.__name__)
+        except sqlite3.OperationalError:
+            raise DBError(DB_TRANSACT_ERROR, func.__name__)
+        except sqlite3.ProgrammingError:
+            raise DBError(DB_PROGRAM_ERROR, func.__name__)
+        except sqlite3.InternalError:
+            raise DBError(DB_INTERNAL_ERROR, func.__name__)
 
     return cast(Callable[P, T], wrapper)
 
@@ -43,7 +54,7 @@ class DatabaseHandler:
     def create_table(self, cursor: Optional[sqlite3.Cursor] = None) -> None:
         """Create the reminders table if it doesn't exist."""
         if cursor is None:
-            raise RuntimeError("missing database connection")
+            raise RuntimeError()
 
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS reminders (
@@ -75,7 +86,7 @@ class DatabaseHandler:
         user_id: int,
         reminder_time: datetime,
         message: str,
-        jump_url: str | None = None,
+        jump_url: Optional[str] = None,
         cursor: Optional[sqlite3.Cursor] = None,
     ) -> None:
         """Store the reminder to the database"""

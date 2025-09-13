@@ -1,9 +1,7 @@
 import discord
 from discord.ext import commands
 import requests
-
 from typing import Dict, Any
-
 from config import WEATHER_API_KEY, WEATHER_BU, WEATHER_CURRENT
 from errors import ERRORS, CLIENT_ERRORS, WEATHER_API_ERROR, WEATHER_404_ERROR
 
