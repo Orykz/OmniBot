@@ -35,20 +35,24 @@ Then, install all the required Python libraries using `uv sync`.
 
 #### 4. Configure Environment Variables and Configurations
 
+- To get your DISCORD_TOKEN, create an application on the Discord Developer Portal.  
+- To get a WeatherAPI.com API key, sign up on their website [WeatherAPI.com](https://www.weatherapi.com/).
+  
+Create environment variables for `DISCORD_TOKEN` and `WEATHER_API_KEY`. Place your keys in their respective variables.  
+
+If you do not want to setup environment variables, you can do this instead:  
 Create a data folder in your project directory.  
-Create `.env` file under your data folder. This is where you will store your secret keys and tokens.
+In that folder, create the `.env` file. This is where you will store your secret keys and tokens.
 ```
 DISCORD_TOKEN=<token>
 WEATHER_API_KEY=<weather_api_key>
-```
-- To get your DISCORD_TOKEN, create an application on the Discord Developer Portal.  
-- To get a WeatherAPI.com API key, sign up on their website [WeatherAPI.com](https://www.weatherapi.com/).  
-
-Create a `config.json` file under your data folder. This is where you will store all your configurations.
+```  
+    
+For the Configs, create a `config.json` file under your data folder. This is where you will store all your configurations.
 ```
 {
     "database": {
-        "db_path": <database_path>
+        "db_path": "data/<name of your db>.db"
     },
     "memes": {
         "base_url": "https://meme-api.com/gimme",
