@@ -1,0 +1,20 @@
+{
+    "database": {
+        "db_path": "[insert db_path here]"
+    },
+    "memes": {
+        "base_url": "[insert base_url here]",
+        "subreddits": [
+            "list all subreddits here"
+        ],
+        "allow_nsfw": false
+    },
+    "weather": {
+        "base_url": "[insert base_url here]",
+        "current": "[insert current weather url here]"
+    },
+    "reminders": {
+        "loop_sec": 30,
+        "note_ind": "note:"
+    }
+}
