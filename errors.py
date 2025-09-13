@@ -17,7 +17,7 @@ from typing import Dict
 
 
 ERRORS: Dict[int, str] = {
-    FILE_404_ERROR: "<name> file does not exist",
+    FILE_404_ERROR: "config file does not exist",
     DB_TRANSACT_ERROR: "Problem encountered during database transaction",
     DB_INTERNAL_ERROR: "Invalid database reference used",
     DB_PROGRAM_ERROR: "Issue with the database system",

@@ -15,15 +15,13 @@ def _get_config(config_path: str) -> Dict[str, Any]:
         return config
 
     except FileNotFoundError:
-        print(ERRORS[FILE_404_ERROR].replace("<name>", "config"))
+        print(ERRORS[FILE_404_ERROR])
         exit()
 
 
 # Load all configurations to the bot application for use
 config = _get_config(CONFIG_PATH)
-if not load_dotenv(DOTENV_PATH):
-    print(ERRORS[FILE_404_ERROR].replace("<name>", "env"))
-    exit()
+load_dotenv(DOTENV_PATH)
 
 try:
     DISCORD_TOKEN = os.environ["DISCORD_TOKEN"]
