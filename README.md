@@ -6,19 +6,19 @@ A versatile, easy-to-use Discord bot built with Python and the discord.py librar
 
 OmniBot is packed with features, all organized into modular cogs for easy maintenance and expansion:
 
-    -**Checks Weather: Get real-time weather updates for any location in the world, using WeatherAPI.com
-    -**Sends Memes: Fetches random memes from your chosen subreddits, using meme-api.com
-    -**Reminders: Set reminders for yourself for minutes, hours, days, or even weeks. Reminders are stored in a database and will persist even if the bot restarts. You can even reply to a message to set a reminder with context!
+-**Checks Weather: Get real-time weather updates for any location in the world, using WeatherAPI.com
+-**Sends Memes: Fetches random memes from your chosen subreddits, using meme-api.com
+-**Reminders: Set reminders for yourself for minutes, hours, days, or even weeks. Reminders are stored in a database and will persist even if the bot restarts. You can even reply to a message to set a reminder with context!
 
 ### Setup and Installation
 
 To get OmniBot running on your own server, follow these steps.
 #### 1. Prerequisites
 
-    -Python **[YOUR-PYTHON-VERSION, e.g., 3.12 or newer]**
-    -uv package to install dependencies
-    -Discord Bot Token
-    -An WeatherAPI.com key
+-Python **[YOUR-PYTHON-VERSION, e.g., 3.12 or newer]**
+-uv package to install dependencies
+-Discord Bot Token
+-An WeatherAPI.com key
 
 #### 2. Clone the Repository
 
@@ -30,19 +30,19 @@ cd [YOUR-PROJECT-FOLDER-NAME]
 
 #### 3. Install Dependencies
 
-First, create a virtual environment in your project folder with `uv venv`
+First, create a virtual environment in your project folder with `uv venv`.
 Then, install all the required Python libraries using `uv sync`.
 
 #### 4. Configure Environment Variables and Configurations
 
-Create a data folder in your project directory
+Create a data folder in your project directory.\n
 Create `.env` file under your data folder. This is where you will store your secret keys and tokens.
 ```
 DISCORD_TOKEN=<token>
 WEATHER_API_KEY=<weather_api_key>
 ```
-    -To get your DISCORD_TOKEN, create an application on the Discord Developer Portal.
-    -To get a WeatherAPI.com API key, sign up on their website [WeatherAPI.com](https://www.weatherapi.com/).
+-To get your DISCORD_TOKEN, create an application on the Discord Developer Portal.
+-To get a WeatherAPI.com API key, sign up on their website [WeatherAPI.com](https://www.weatherapi.com/).
 
 Create a `config.json` file under your data folder. This is where you will store all your configurations.
 config.json
@@ -70,18 +70,18 @@ config.json
 
 #### 5. Run the Bot
 
-Once everything is configured, you can start the bot with the following command:
+Once everything is configured, you can start the bot with the following command (Do not forget to add your bot to the server):
 ```
 python bot.py
 ```
 
 Usage Examples
 
-Here are some of the commands you can use with OmniBot (default prefix is !):
-    -**!weather [location]**: Get the weather for a location (e.g., !weather manila).
-    -**!meme**: receive a random meme.
-    -**!remindme [time] note:[message]**: Set a reminder (e.g., !remindme 2 days note: Check on the report).
-    -Reply to a message with **!remind [time]**: Sets a reminder for that specific message.
+Here are some of the commands you can use with OmniBot (default prefix is !):\n
+-**!weather [location]**: Get the weather for a location (e.g., !weather manila).
+-**!meme**: receive a random meme.
+-**!remindme [time] note:[message]**: Set a reminder (e.g., `!remindme 2 days note: Check on the report`).
+Reply to a message with **!remind [time]**: Sets a reminder for that specific message.
 
 
 ### License
