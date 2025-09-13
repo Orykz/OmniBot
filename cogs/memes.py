@@ -16,7 +16,7 @@ class Memes(commands.Cog):
         self.subreddits = MEME_SUBS
         self.allow_nsfw = MEME_NSFW
 
-    @commands.command(name="meme", help="Sends a random meme from Reddit.")
+    @commands.command(name="meme", help="Sends a random meme from Reddit. Usage: !meme")
     async def get_meme(self, ctx: commands.Context) -> None:
         chosen_subreddit = random.choice(self.subreddits)
         url = f"{self.base_url}/{chosen_subreddit}"

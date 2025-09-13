@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import parsedatetime
 from datetime import datetime, timezone
 from database import DatabaseHandler, Reminder
+from config import REM_LOOP_SEC, REM_NOTE_IND
 from errors import (
     DBError,
     ERRORS,
@@ -31,17 +32,16 @@ class Reminders(commands.Cog):
         reminder_content = ""
         jump_url = ""
 
-        split_data = text.split("note:")
+        split_data = text.split(REM_NOTE_IND)
         time_set = split_data[0]
-        message = split_data[1] if len(split_data) > 1 else None
-        parsed_time, parse_status = self.cal.parseDT(time_set, tzinfo=timezone.utc)
+        message = split_data[1].strip() if len(split_data) > 1 else None
+        parsed = self.cal.parseDT(time_set)  # returns a tuple (result, flag)
+        parsed_time: datetime = parsed[0]
+        parse_status = parsed[1]
 
         try:
             if not parse_status:
                 raise ValueError
-
-            time_data = datetime(*parsed_time[:6])
-            time_data_utc = time_data.astimezone(timezone.utc)
 
             if ctx.message.reference and ctx.message.reference.message_id:
                 replied_to_message = await ctx.fetch_message(
@@ -49,9 +49,10 @@ class Reminders(commands.Cog):
                 )
                 jump_url = replied_to_message.jump_url
 
-            if message:
-                reminder_content = message
+            if message is not None:
+                reminder_content = f"\nNote: {message}"
 
+            time_data_utc = parsed_time.astimezone(timezone.utc)
             self.db_handler.set_reminder(
                 ctx.author.id, time_data_utc, reminder_content, jump_url
             )
@@ -66,7 +67,15 @@ class Reminders(commands.Cog):
             error = CLIENT_ERRORS[e.code]
             await ctx.send(error)
 
-    async def send_reminder(self, reminder: Reminder):
+    async def send_reminder(self, reminder: Reminder) -> None:
+        """Function for the bot to send reminder to the user.
+
+        Args:
+            reminder (Reminder): Reminder object.
+
+        Raises:
+            discord.Forbidden: If user does not allow direct messages.
+        """
         user = self.bot.get_user(reminder.user_id)
 
         if user:
@@ -81,8 +90,9 @@ class Reminders(commands.Cog):
             except discord.Forbidden:
                 print(ERRORS[DIRECT_MESSAGE_ERROR])
 
-    @tasks.loop(seconds=5)
+    @tasks.loop(seconds=REM_LOOP_SEC)
     async def check_reminders(self):
+        """This will check all reminders in database that have their time elapsed, follows the UTC timezone. (Default loop: 30s)"""
         await self.bot.wait_until_ready()
         now_utc = datetime.now(timezone.utc)
         reminders_to_send = self.db_handler.get_reminders(now_utc)

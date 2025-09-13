@@ -2,31 +2,27 @@ import os
 import json
 from dotenv import load_dotenv
 from typing import Dict, Any
-from errors import ERRORS, SUCCESS, FILE_404_ERROR, KEY_ERROR
+from errors import ERRORS, FILE_404_ERROR, KEY_ERROR
+
+CONFIG_PATH = "data/config.json"
+DOTENV_PATH = "data/.env"
 
 
-def _get_config() -> Dict[str, Any]:
+def _get_config(config_path: str) -> Dict[str, Any]:
     try:
-        with open("data/config.json", "r") as json_file:
+        with open(config_path, "r") as json_file:
             config = json.load(json_file)
         return config
 
     except FileNotFoundError:
-        print(ERRORS[FILE_404_ERROR])
+        print(ERRORS[FILE_404_ERROR].replace("<name>", "config"))
         exit()
 
 
-def _load_env() -> int:
-    if not load_dotenv():
-        return FILE_404_ERROR
-
-    return SUCCESS
-
-
-config = _get_config()
-error = _load_env()
-if error:
-    print(ERRORS[error])
+# Load all configurations to the bot application for use
+config = _get_config(CONFIG_PATH)
+if not load_dotenv(DOTENV_PATH):
+    print(ERRORS[FILE_404_ERROR].replace("<name>", "env"))
     exit()
 
 try:
@@ -44,6 +40,10 @@ try:
     weather_config = config["weather"]
     WEATHER_BU = weather_config["base_url"]
     WEATHER_CURRENT = weather_config["current"]
+
+    reminders_config = config["reminders"]
+    REM_LOOP_SEC = reminders_config["loop_sec"]
+    REM_NOTE_IND = reminders_config["note_ind"]
 
 except KeyError:
     print(ERRORS[KEY_ERROR])

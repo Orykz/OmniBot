@@ -17,7 +17,7 @@ from typing import Dict
 
 
 ERRORS: Dict[int, str] = {
-    FILE_404_ERROR: "file does not exist",
+    FILE_404_ERROR: "<name> file does not exist",
     DB_TRANSACT_ERROR: "Problem encountered during database transaction",
     DB_INTERNAL_ERROR: "Invalid database reference used",
     DB_PROGRAM_ERROR: "Issue with the database system",
@@ -46,7 +46,21 @@ CLIENT_ERRORS: Dict[int, str] = {
 
 
 class DBError(Exception):
+    """Custom exception to handle database errors due to function execution.
+
+    Attributes:
+        message(str): the error message given based on the error code.
+        code(int): the error code caused by function.
+        function_name(str): name of function where the error originated.
+    """
+
     def __init__(self, error_code: int, function_name: str) -> None:
+        """Initializes exception when raised.
+
+        Args:
+            code(int): the error code caused by function. based on constructed ERROR codes
+            function_name(str): name of function where the error originated.
+        """
         self.message = ERRORS[error_code]
         self.code = error_code
         self.function_name = function_name
